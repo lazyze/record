@@ -1,0 +1,1 @@
+. "/home/lize/conan/hellopkg/test_package/build/generators/conanrunenv-release-x86_64.sh"

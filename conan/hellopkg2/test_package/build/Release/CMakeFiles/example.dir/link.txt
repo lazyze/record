@@ -1,0 +1,1 @@
+/usr/bin/c++  -m64 -O3 -DNDEBUG  -m64 CMakeFiles/example.dir/src/example.cpp.o  -o example  /home/lize/.conan/data/hello/0.2/demo/lize/package/b911f48570f9bb2902d9e83b2b9ebf9d376c8c56/lib/libhello.a 

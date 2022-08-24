@@ -1,0 +1,3 @@
+/home/lize/conan/hellopkg2/test_package/build/Release/CMakeFiles/rebuild_cache.dir
+/home/lize/conan/hellopkg2/test_package/build/Release/CMakeFiles/edit_cache.dir
+/home/lize/conan/hellopkg2/test_package/build/Release/CMakeFiles/example.dir

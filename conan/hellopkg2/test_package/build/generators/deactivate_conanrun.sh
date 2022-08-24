@@ -1,0 +1,1 @@
+. "/home/lize/conan/hellopkg2/test_package/build/generators/deactivate_conanrunenv-release-x86_64.sh"

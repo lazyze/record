@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lize/.conan/data/hello/0.2/demo/lize/package/b911f48570f9bb2902d9e83b2b9ebf9d376c8c56/include/hello.h
+
+/home/lize/conan/hellopkg2/test_package/src/example.cpp
+hello.h
+/home/lize/conan/hellopkg2/test_package/src/hello.h
+

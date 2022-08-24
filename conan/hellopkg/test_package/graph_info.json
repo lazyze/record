@@ -1,0 +1,18 @@
+{
+ "options": [
+  [
+   "hello:fPIC",
+   "True"
+  ],
+  [
+   "hello:shared",
+   "False"
+  ]
+ ],
+ "root": {
+  "name": null,
+  "version": null,
+  "user": "demo",
+  "channel": "testing"
+ }
+}
