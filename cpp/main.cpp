@@ -25,9 +25,23 @@ void test_output_folating() {
 	cout << fixed << setprecision(15) << 4.786878 << endl;
 }
 
+#define SIZEOF(type) {cout << "sizeof("#type") = " << sizeof(type) << endl;}
+void test_dates_bytes() {
+	SIZEOF(int);
+	SIZEOF(short);
+	SIZEOF(long);
+	SIZEOF(long long);
+	// SIZEOF();
+	// SIZEOF();
+	// SIZEOF();
+	// SIZEOF();
+	// SIZEOF();
+}
+
 
 int main () {
 	//test_VA_ARGS();
-	test_output_folating();
+	// test_output_folating();
+	test_dates_bytes();
 	return 0;
 }
