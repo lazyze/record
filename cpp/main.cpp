@@ -41,25 +41,51 @@ void test_dates_bytes() {
 
 #include <string.h>
 void test_strings() {
-  char str[1024] = "0123456789"
-                      "0123456789"
-                        "0123456789"
-                          "0123456789"
-                            "0123456789";
-  char str1[1024] = "0123456789\
+  char str[1024] =
+      "0123456789"
+      "0123456789"
+      "0123456789"
+      "0123456789"
+      "0123456789";
+  char str1[1024] =
+      "0123456789\
                       0123456789\
                         0123456789\
                           0123456789\
                             0123456789";
 
-  char str2[1024] = "0123456789 \
+  char str2[1024] =
+      "0123456789 \
                       0123456789 \
                         0123456789 \
                           0123456789 \
                             0123456789";
-  cout << "strlen(str)"<< strlen(str) << endl;
-  cout << "strlen(str1)"<< strlen(str1) << endl;
-  cout << "strlen(str2)"<< strlen(str2) << endl;
+  cout << "strlen(str)" << strlen(str) << endl;
+  cout << "strlen(str1)" << strlen(str1) << endl;
+  cout << "strlen(str2)" << strlen(str2) << endl;
+
+  char str3[1024] = "isokisok";
+  int i = 0;
+  for (; i < 3; i++) {
+    str3[i] = 'a' + i % 26;
+  }
+  str3[i] = 0;
+  cout << "strlen(str3)" << strlen(str3) << endl;
+}
+
+#define TESTFUNC(NUM) \
+  int pri_##NUM##();      \
+  int pri_##NUM##() {     \
+    int a = NUM;      \
+    return a;         \
+  }
+
+TESTFUNC(123);
+TESTFUNC(456);
+
+void test_defineFunc() {
+  cout << pri_123() << endl;
+  cout << pri_456() << endl;
 }
 
 int main() {
