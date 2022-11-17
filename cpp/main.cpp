@@ -151,11 +151,37 @@ void test_inline_assemble() {
 }
 }  // namespace INLINE_ASSEMBLE
 
+namespace ENABLE_IF {
+#define SFINAE_TYPE_SAME(type1, type2) \
+  typename std::enable_if<std::is_same<type1, type2>::value>::type * = nullptr
+
+template <typename T>
+int FromString(const std::string &in, SFINAE_TYPE_SAME(T, int)) {
+  return std::stoi(in);
+}
+
+template <typename T>
+int64_t FromString(const std::string &in, SFINAE_TYPE_SAME(T, int64_t)) {
+  return std::stoll(in);
+}
+
+void test() {
+  std::string str("2147483647");
+  std::string strl("4294967295");
+  int num;
+  int64_t numl;
+  cout << "FromString结果为:"<< FromString<int>(str, &num) << "期望值:2147483647\n";
+  cout << "FromString结果为:"<< FromString<int64_t>(strl, &numl) << "期望值:4294967295\n";
+  // cout << "FromString结果为:"<< FromString<int>(strl, &numl) << "期望值:4294967295\n";
+}
+}  // namespace ENABLE_IF
+
 int main() {
   // test_VA_ARGS();
   // test_output_folating();
   // test_dates_bytes();
   // test_strings();
-  INLINE_ASSEMBLE::test_inline_assemble();
+  // INLINE_ASSEMBLE::test_inline_assemble();
+  ENABLE_IF::test();
   return 0;
 }
