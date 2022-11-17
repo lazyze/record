@@ -73,25 +73,89 @@ void test_strings() {
   cout << "strlen(str3)" << strlen(str3) << endl;
 }
 
-#define TESTFUNC(NUM) \
-  int pri_##NUM##();      \
-  int pri_##NUM##() {     \
-    int a = NUM;      \
-    return a;         \
-  }
+// #define TESTFUNC(NUM) \
+//   int pri_##NUM##();  \
+//   int pri_##NUM##() { \
+//     int a = NUM;      \
+//     return a;         \
+//   }
 
-TESTFUNC(123);
-TESTFUNC(456);
+// TESTFUNC(123);
+// TESTFUNC(456);
 
-void test_defineFunc() {
-  cout << pri_123() << endl;
-  cout << pri_456() << endl;
+// void test_defineFunc() {
+//   cout << pri_123() << endl;
+//   cout << pri_456() << endl;
+// }
+
+//测试内联汇编
+namespace INLINE_ASSEMBLE {
+typedef signed int s32_t;
+typedef unsigned int u32_t;
+//定义一个原子类型
+typedef struct s_ATOMIC {
+  volatile s32_t
+      a_count;  //在变量前加上volatile，是为了禁止编译器优化，使其每次都从内存中加载变量
+} atomic_t;
+//原子读
+static inline s32_t atomic_read(const atomic_t *v) {
+  // x86平台取地址处是原子
+  return (*(volatile u32_t *)&(v)->a_count);
 }
+//原子写
+static inline void atomic_write(atomic_t *v, int i) {
+  // x86平台把一个值写入一个地址处也是原子的
+  v->a_count = i;
+}
+//原子加上一个整数
+static inline void atomic_add(int i, atomic_t *v) {
+  __asm__ __volatile__(
+      "lock;"
+      "addl %1,%0"
+      : "+m"(v->a_count)
+      : "ir"(i));
+}
+//原子减去一个整数
+static inline void atomic_sub(int i, atomic_t *v) {
+  __asm__ __volatile__(
+      "lock;"
+      "subl %1,%0"
+      : "+m"(v->a_count)
+      : "ir"(i));
+}
+//原子加1
+static inline void atomic_inc(atomic_t *v) {
+  __asm__ __volatile__(
+      "lock;"
+      "incl %0"
+      : "+m"(v->a_count));
+}
+//原子减1
+static inline void atomic_dec(atomic_t *v) {
+  __asm__ __volatile__(
+      "lock;"
+      "decl %0"
+      : "+m"(v->a_count));
+}
+
+void test_inline_assemble() {
+  atomic_t a = {8};
+  int i = 2;
+  int j = 5;
+  printf("原子变量的值为%d, 期待值为8\n", a.a_count);
+  atomic_add(i, &a);
+  printf("i的值为%d, 期待值为2\n", i);
+  printf("原子变量的值为%d, 期待值为10\n", a.a_count);
+  atomic_sub(j, &a);
+  printf("原子变量的值为%d, 期待值为5\n", a.a_count);
+}
+}  // namespace INLINE_ASSEMBLE
 
 int main() {
   // test_VA_ARGS();
   // test_output_folating();
   // test_dates_bytes();
-  test_strings();
+  // test_strings();
+  INLINE_ASSEMBLE::test_inline_assemble();
   return 0;
 }
