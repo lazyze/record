@@ -88,26 +88,26 @@ void test_strings() {
 //   cout << pri_456() << endl;
 // }
 
-//测试内联汇编
+// 测试内联汇编
 namespace INLINE_ASSEMBLE {
 typedef signed int s32_t;
 typedef unsigned int u32_t;
-//定义一个原子类型
+// 定义一个原子类型
 typedef struct s_ATOMIC {
   volatile s32_t
-      a_count;  //在变量前加上volatile，是为了禁止编译器优化，使其每次都从内存中加载变量
+      a_count;  // 在变量前加上volatile，是为了禁止编译器优化，使其每次都从内存中加载变量
 } atomic_t;
-//原子读
+// 原子读
 static inline s32_t atomic_read(const atomic_t *v) {
   // x86平台取地址处是原子
   return (*(volatile u32_t *)&(v)->a_count);
 }
-//原子写
+// 原子写
 static inline void atomic_write(atomic_t *v, int i) {
   // x86平台把一个值写入一个地址处也是原子的
   v->a_count = i;
 }
-//原子加上一个整数
+// 原子加上一个整数
 static inline void atomic_add(int i, atomic_t *v) {
   __asm__ __volatile__(
       "lock;"
@@ -115,7 +115,7 @@ static inline void atomic_add(int i, atomic_t *v) {
       : "+m"(v->a_count)
       : "ir"(i));
 }
-//原子减去一个整数
+// 原子减去一个整数
 static inline void atomic_sub(int i, atomic_t *v) {
   __asm__ __volatile__(
       "lock;"
@@ -123,14 +123,14 @@ static inline void atomic_sub(int i, atomic_t *v) {
       : "+m"(v->a_count)
       : "ir"(i));
 }
-//原子加1
+// 原子加1
 static inline void atomic_inc(atomic_t *v) {
   __asm__ __volatile__(
       "lock;"
       "incl %0"
       : "+m"(v->a_count));
 }
-//原子减1
+// 原子减1
 static inline void atomic_dec(atomic_t *v) {
   __asm__ __volatile__(
       "lock;"
@@ -170,11 +170,63 @@ void test() {
   std::string strl("4294967295");
   int num;
   int64_t numl;
-  cout << "FromString结果为:"<< FromString<int>(str, &num) << "期望值:2147483647\n";
-  cout << "FromString结果为:"<< FromString<int64_t>(strl, &numl) << "期望值:4294967295\n";
-  // cout << "FromString结果为:"<< FromString<int>(strl, &numl) << "期望值:4294967295\n";
+  cout << "FromString结果为:" << FromString<int>(str, &num)
+       << "期望值:2147483647\n";
+  cout << "FromString结果为:" << FromString<int64_t>(strl, &numl)
+       << "期望值:4294967295\n";
+  // cout << "FromString结果为:"<< FromString<int>(strl, &numl) <<
+  // "期望值:4294967295\n";
 }
 }  // namespace ENABLE_IF
+
+namespace CONST_PTR {
+void test() {
+  char test[10] = "hello";
+  // char *const test;
+  test[2] = 'x';
+  printf("test[10] = %s\n", test);
+  const char *buf = "helloworld";
+  printf("buf = %s\n", buf);
+  // buf[2] = 'x';
+  buf = "another";
+  // buf[12] = 'x';
+  printf("buf = %s\n", buf);
+}
+}  // namespace CONST_PTR
+
+#include <set>
+#include <string>
+
+#include "./toml11/toml.hpp"
+#define IDENT "ident"
+#define CONFPATH "/home/lize/ifads/test/iflog/conf/iflog_conf.toml"
+namespace TOML {
+
+
+std::set<std::string> InitLogFromConf(const char *confFileName) {
+  std::set<std::string> ret;
+  const auto data = toml::parse(confFileName);
+  const auto map = toml::get<toml::table>(data);
+  for (auto it = map.begin(); it != map.end(); it++) {
+    if (toml::get<toml::table>(data).at(it->first).is_table()) {
+      const auto name =
+          toml::find_or<std::string>(toml::find(data, it->first), IDENT, "");
+      if (!name.empty()) {
+        string ident = name.substr(0, name.find_last_of('/'));
+        ret.insert(ident);
+      }
+    }
+  }
+  return ret;
+}
+
+void test() {
+  set<string> pos = InitLogFromConf(CONFPATH);
+  for (auto it : pos) {
+    cout << "日志文件位置：" << it << endl;
+  }
+}
+}  // namespace TOML
 
 int main() {
   // test_VA_ARGS();
@@ -182,6 +234,8 @@ int main() {
   // test_dates_bytes();
   // test_strings();
   // INLINE_ASSEMBLE::test_inline_assemble();
-  ENABLE_IF::test();
+  // ENABLE_IF::test();
+  CONST_PTR::test();
+  // TOML::test();
   return 0;
 }
