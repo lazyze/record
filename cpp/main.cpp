@@ -71,6 +71,14 @@ void test_strings() {
   }
   str3[i] = 0;
   cout << "strlen(str3)" << strlen(str3) << endl;
+
+  char str4[16] = "tcp://*:";
+  char *pos = str4 + strlen(str4);
+  uint32_t port = 8000;
+  sprintf(pos, "%d", port);
+  cout << "str4 = "<< str4 << endl;
+  cout << "str4的真实长度为" << strlen(str4) << endl;
+  cout << "str4的数组长度为" << sizeof(str4) << endl;
 }
 
 // #define TESTFUNC(NUM) \
@@ -232,10 +240,10 @@ int main() {
   // test_VA_ARGS();
   // test_output_folating();
   // test_dates_bytes();
-  // test_strings();
+  test_strings();
   // INLINE_ASSEMBLE::test_inline_assemble();
   // ENABLE_IF::test();
-  CONST_PTR::test();
+  // CONST_PTR::test();
   // TOML::test();
   return 0;
 }
