@@ -76,7 +76,7 @@ void test_strings() {
   char *pos = str4 + strlen(str4);
   uint32_t port = 8000;
   sprintf(pos, "%d", port);
-  cout << "str4 = "<< str4 << endl;
+  cout << "str4 = " << str4 << endl;
   cout << "str4的真实长度为" << strlen(str4) << endl;
   cout << "str4的数组长度为" << sizeof(str4) << endl;
 }
@@ -210,7 +210,6 @@ void test() {
 #define CONFPATH "/home/lize/ifads/test/iflog/conf/iflog_conf.toml"
 namespace TOML {
 
-
 std::set<std::string> InitLogFromConf(const char *confFileName) {
   std::set<std::string> ret;
   const auto data = toml::parse(confFileName);
@@ -238,113 +237,136 @@ void test() {
 
 #include <string.h>
 #define LINE_SIZE (4096)
-namespace TESTFILE{
-  int findSubstrPos (const char* dstStr, const char* subStr) {
-    const char* ptr = strstr(dstStr, subStr);
-    return ptr - dstStr;
-  }
+namespace TESTFILE {
+int findSubstrPos(const char *dstStr, const char *subStr) {
+  const char *ptr = strstr(dstStr, subStr);
+  return ptr - dstStr;
+}
 
-  int findLogDuration(FILE * fp) {
-    int rt = 0;
-    if(fp == NULL) return rt;
-    char first_line[LINE_SIZE] = {};
-    if(fgets(first_line, LINE_SIZE, fp) == NULL) return rt;
-    char last_line[LINE_SIZE] = {};
-    while (fgets(last_line, LINE_SIZE, fp));
-    if (strlen(last_line) == 0) {
-      return rt;
-    }
-
-    char first_time[LINE_SIZE] ={};
-    memcpy(first_time, first_line, findSubstrPos(first_line, "  "));
-    char last_time[LINE_SIZE] = {};
-    memcpy(last_time, last_line, findSubstrPos(last_line, "  "));
-
-    struct tm firstlogtime;
-    struct tm lastlogtime;
-
-    strptime(first_time, "%Y-%m-%d %H:%M:%S", &firstlogtime);
-    strptime(last_time, "%Y-%m-%d %H:%M:%S", &lastlogtime);
-
-    char firstlogtimestr[60];
-    char lastlogtimestr[60];
-    strftime(firstlogtimestr, 60, "第一条时间%Y-%m-%d %H:%M:%S", &firstlogtime);
-    strftime(lastlogtimestr, 60, "最后一条时间%Y-%m-%d %H:%M:%S", &lastlogtime);
-    cout << firstlogtimestr << endl;
-    cout << lastlogtimestr << endl;
-
-    time_t firstlogtimeSecond =  mktime(&firstlogtime);
-    time_t lastlogtimeSecond =  mktime(&lastlogtime);
-    cout << "相差秒数：" << lastlogtimeSecond - firstlogtimeSecond << endl;
+int findLogDuration(FILE *fp) {
+  int rt = 0;
+  if (fp == NULL) return rt;
+  char first_line[LINE_SIZE] = {};
+  if (fgets(first_line, LINE_SIZE, fp) == NULL) return rt;
+  char last_line[LINE_SIZE] = {};
+  while (fgets(last_line, LINE_SIZE, fp))
+    ;
+  if (strlen(last_line) == 0) {
     return rt;
   }
 
-  void Func () {
-    const char *path = "/home/lize/record/cpp/log/pnc-20230111_175634736.log.log";
-    FILE * fp = fopen(path, "a+");
-    char first_line[LINE_SIZE] = {};
-    fgets(first_line, LINE_SIZE, fp);
-    char last_line[LINE_SIZE] = {};
-    int line_count = 1;
-    while (fgets(last_line, LINE_SIZE, fp)) {
-      line_count++;
-      cout << "当前行数为：" << line_count << endl;
-    }
-    if (strlen(last_line) == 0) {
-      memcpy(last_line, first_line, strlen(first_line));
-    }
-    cout << "总行数为：" << line_count << endl;
-    cout << "第一行数据为: " << first_line << endl;
-    cout << "最后一行数据为: " << last_line << endl;
+  char first_time[LINE_SIZE] = {};
+  memcpy(first_time, first_line, findSubstrPos(first_line, "  "));
+  char last_time[LINE_SIZE] = {};
+  memcpy(last_time, last_line, findSubstrPos(last_line, "  "));
 
-    char first_time[LINE_SIZE] ={};
-    memcpy(first_time, first_line, findSubstrPos(first_line, "  "));
-    char last_time[LINE_SIZE] = {};
-    memcpy(last_time, last_line, findSubstrPos(last_line, "  "));
-    cout << "第一行时间数据为: " << first_time << endl;
-    cout << "最后一行时间数据为: " << last_time << endl;
+  struct tm firstlogtime;
+  struct tm lastlogtime;
 
-    char first_day[16] = {};
-    memcpy(first_day, first_time, findSubstrPos(first_time, " "));
-    char last_day[16] = {};
-    memcpy(last_day, last_time, findSubstrPos(last_time, " "));
-    cout << "第一行时间年月日数据为: " << first_day << endl;
-    cout << "最后一行时间年月日数据为: " << last_day << endl;
-    if(strcmp(first_day, last_day) != 0) {
-      cout << "不属于同一天" << endl;
-    }
-    char first_min[16] = {};
-    // memcpy(first_min, first_time + findSubstrPos(first_time, " ") + 1, 5);
-    memcpy(first_min, strstr(first_time, " ") + 1, 5);
-    char last_min[16] = {};
-    // memcpy(last_min, last_time + findSubstrPos(last_time, " ") + 1, 5);
-    memcpy(last_min, strstr(last_time, " ") + 1, 5);
-    cout << "第一行时间分钟数据为: " << first_min << endl;
-    cout << "最后一行时间分钟数据为: " << last_min << endl;
-    char firstHourStr[4] = {};
-    strncpy(firstHourStr, first_min, 2);
-    char lastHourStr[4] = {};
-    strncpy(lastHourStr, last_min, 2);
+  strptime(first_time, "%Y-%m-%d %H:%M:%S", &firstlogtime);
+  strptime(last_time, "%Y-%m-%d %H:%M:%S", &lastlogtime);
 
-    char firstMinStr[4] = {};
-    strncpy(firstMinStr, first_min + 3, 2);
-    char lastMinStr[4] = {};
-    strncpy(lastMinStr, last_min + 3, 2);
-    int fisrtMin = atoi(firstHourStr) * 60  + atoi(firstMinStr);
-    int lastMin = atoi(lastHourStr) * 60  + atoi(lastMinStr);
-    cout << "第一行时间分钟数据为: " << fisrtMin << endl;
-    cout << "最后一行时间分钟数据为: " << lastMin << endl;
-    cout << "差距时间(分钟): " << lastMin - fisrtMin << endl;
-  }
+  char firstlogtimestr[60];
+  char lastlogtimestr[60];
+  strftime(firstlogtimestr, 60, "第一条时间%Y-%m-%d %H:%M:%S", &firstlogtime);
+  strftime(lastlogtimestr, 60, "最后一条时间%Y-%m-%d %H:%M:%S", &lastlogtime);
+  cout << firstlogtimestr << endl;
+  cout << lastlogtimestr << endl;
 
-  void test () {
-    const char *path = "/home/lize/record/cpp/log/pnc-20230111_175634736.log.log";
-    FILE * fp = fopen(path, "a+");
-    findLogDuration(fp);
-  }
-  
-
+  time_t firstlogtimeSecond = mktime(&firstlogtime);
+  time_t lastlogtimeSecond = mktime(&lastlogtime);
+  cout << "相差秒数：" << lastlogtimeSecond - firstlogtimeSecond << endl;
+  return rt;
 }
+
+void Func() {
+  const char *path = "/home/lize/record/cpp/log/pnc-20230111_175634736.log.log";
+  FILE *fp = fopen(path, "a+");
+  char first_line[LINE_SIZE] = {};
+  fgets(first_line, LINE_SIZE, fp);
+  char last_line[LINE_SIZE] = {};
+  int line_count = 1;
+  while (fgets(last_line, LINE_SIZE, fp)) {
+    line_count++;
+    cout << "当前行数为：" << line_count << endl;
+  }
+  if (strlen(last_line) == 0) {
+    memcpy(last_line, first_line, strlen(first_line));
+  }
+  cout << "总行数为：" << line_count << endl;
+  cout << "第一行数据为: " << first_line << endl;
+  cout << "最后一行数据为: " << last_line << endl;
+
+  char first_time[LINE_SIZE] = {};
+  memcpy(first_time, first_line, findSubstrPos(first_line, "  "));
+  char last_time[LINE_SIZE] = {};
+  memcpy(last_time, last_line, findSubstrPos(last_line, "  "));
+  cout << "第一行时间数据为: " << first_time << endl;
+  cout << "最后一行时间数据为: " << last_time << endl;
+
+  char first_day[16] = {};
+  memcpy(first_day, first_time, findSubstrPos(first_time, " "));
+  char last_day[16] = {};
+  memcpy(last_day, last_time, findSubstrPos(last_time, " "));
+  cout << "第一行时间年月日数据为: " << first_day << endl;
+  cout << "最后一行时间年月日数据为: " << last_day << endl;
+  if (strcmp(first_day, last_day) != 0) {
+    cout << "不属于同一天" << endl;
+  }
+  char first_min[16] = {};
+  // memcpy(first_min, first_time + findSubstrPos(first_time, " ") + 1, 5);
+  memcpy(first_min, strstr(first_time, " ") + 1, 5);
+  char last_min[16] = {};
+  // memcpy(last_min, last_time + findSubstrPos(last_time, " ") + 1, 5);
+  memcpy(last_min, strstr(last_time, " ") + 1, 5);
+  cout << "第一行时间分钟数据为: " << first_min << endl;
+  cout << "最后一行时间分钟数据为: " << last_min << endl;
+  char firstHourStr[4] = {};
+  strncpy(firstHourStr, first_min, 2);
+  char lastHourStr[4] = {};
+  strncpy(lastHourStr, last_min, 2);
+
+  char firstMinStr[4] = {};
+  strncpy(firstMinStr, first_min + 3, 2);
+  char lastMinStr[4] = {};
+  strncpy(lastMinStr, last_min + 3, 2);
+  int fisrtMin = atoi(firstHourStr) * 60 + atoi(firstMinStr);
+  int lastMin = atoi(lastHourStr) * 60 + atoi(lastMinStr);
+  cout << "第一行时间分钟数据为: " << fisrtMin << endl;
+  cout << "最后一行时间分钟数据为: " << lastMin << endl;
+  cout << "差距时间(分钟): " << lastMin - fisrtMin << endl;
+}
+
+void test() {
+  const char *path = "/home/lize/record/cpp/log/pnc-20230111_175634736.log.log";
+  FILE *fp = fopen(path, "a+");
+  findLogDuration(fp);
+}
+
+}  // namespace TESTFILE
+
+// 测试打开不存在的文件
+namespace TESTOPEN {
+int test(string &name) {
+  fstream fs;
+  fs.open(name.c_str(), std::fstream::in);
+  if (fs.fail()) {
+    std::cout << "Failed to open file!" << std::endl;
+  } else {
+    std::cout << "File opened successfully!" << std::endl;
+  }
+  pid_t pid = -1;
+  fs >> pid;
+  string proName;
+  fs >> proName;
+  char status;
+  fs >> status;
+  printf("open success, pid:%d name:%s status: %c\n", pid, proName.c_str(),
+         status);
+  return 0;
+}
+
+}  // namespace TESTOPEN
 
 int main() {
   // test_VA_ARGS();
@@ -355,6 +377,10 @@ int main() {
   // ENABLE_IF::test();
   // CONST_PTR::test();
   // TOML::test();
-  TESTFILE::test();
+  // TESTFILE::test();
+  // string name("/proc/3497638/stat"); //success
+  string name("/proc/3497565438/stat");  // failed
+  TESTOPEN::test(name);
+
   return 0;
 }
