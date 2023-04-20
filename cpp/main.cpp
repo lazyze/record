@@ -365,8 +365,20 @@ int test(string &name) {
          status);
   return 0;
 }
-
 }  // namespace TESTOPEN
+
+#include <cstdlib>
+#include <ctime>
+namespace RAND_NUMBER {
+void test() {
+  std::srand(std::time(0));  // 以当前时间为随机数生成器的种子
+  int random_variable = std::rand() % 16777216;
+  std::cout << "Random value on [0 " << RAND_MAX << "]: " << random_variable
+            << '\n';
+  std::cout << hex << setw(6) << setfill('0') << random_variable << std::endl;
+  std::cout << random_variable << std::endl;
+}
+}  // namespace RAND_NUMBER
 
 int main() {
   // test_VA_ARGS();
@@ -379,8 +391,8 @@ int main() {
   // TOML::test();
   // TESTFILE::test();
   // string name("/proc/3497638/stat"); //success
-  string name("/proc/3497565438/stat");  // failed
-  TESTOPEN::test(name);
-
+  // string name("/proc/3497565438/stat");  // failed
+  // TESTOPEN::test(name);
+  RAND_NUMBER::test();
   return 0;
 }
