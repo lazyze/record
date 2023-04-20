@@ -377,6 +377,9 @@ void test() {
             << '\n';
   std::cout << hex << setw(6) << setfill('0') << random_variable << std::endl;
   std::cout << random_variable << std::endl;
+  char str[256];
+  sprintf(str, "%016x\n", random_variable);
+  std::cout << str << std::endl;
 }
 }  // namespace RAND_NUMBER
 
