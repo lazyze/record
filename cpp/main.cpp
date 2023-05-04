@@ -383,6 +383,36 @@ void test() {
 }
 }  // namespace RAND_NUMBER
 
+#include <dirent.h>
+
+namespace FOLDER {
+int test(string &path) {
+  DIR *dir = NULL;
+  dir = opendir(path.c_str());
+  struct dirent *entry = NULL;
+
+  while ((entry = readdir(dir)) != NULL) {
+    if (strcmp(entry->d_name, ".") == 0 ||
+        strcmp(entry->d_name, "..") == 0)  /// current dir OR parrent dir
+    {
+      continue;
+    }
+    char dir_pathname[5120] = {0};
+    sprintf(dir_pathname, "%s/%s", path.c_str(), entry->d_name);
+    // 4是目录 8是文件
+    if (entry->d_type == 8) {
+      printf("目前处理的文件为%s\n", dir_pathname);
+
+    } else {
+      printf("目前处理的文件夹为%s\n", dir_pathname);
+      string folder = dir_pathname;
+      test(folder);
+    }
+  }
+  return 0;
+}
+}  // namespace FOLDER
+
 int main() {
   // test_VA_ARGS();
   // test_output_folating();
@@ -396,6 +426,8 @@ int main() {
   // string name("/proc/3497638/stat"); //success
   // string name("/proc/3497565438/stat");  // failed
   // TESTOPEN::test(name);
-  RAND_NUMBER::test();
+  // RAND_NUMBER::test();
+  string path = "../linux/objcopy/xavier/bin";
+  FOLDER::test(path);
   return 0;
 }
