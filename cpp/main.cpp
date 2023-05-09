@@ -413,7 +413,32 @@ int test(string &path) {
 }
 }  // namespace FOLDER
 
-int main() {
+#include <fstream>
+#include <iostream>
+namespace FILE_STRING {
+int test(string &name) {
+  ifstream ifile(name);
+  //将文件读入到ostringstream对象buf中
+  ostringstream buf;
+  char ch;
+  while(buf&&ifile.get(ch))
+  buf.put(ch);
+  string ret = buf.str();
+  cout << "读取de字符串为:" << ret << ",长度为:" << ret.size() << endl;
+  return 0;
+}
+int test2(string &name) {
+  FILE *pFile = fopen(name.c_str(), "rb");
+  // unsigned char buffer[1024] = "";
+  char buffer[1024] = "";
+  int len = 0;
+  len = fread(buffer, 1, 1024, pFile);
+  cout << "读取de字符串为:" << buffer << ",长度为:" << len << endl;
+  return 0;
+}
+}  // namespace FILE_STRING
+
+int main(int argc, char *argv[]) {
   // test_VA_ARGS();
   // test_output_folating();
   // test_dates_bytes();
@@ -427,7 +452,10 @@ int main() {
   // string name("/proc/3497565438/stat");  // failed
   // TESTOPEN::test(name);
   // RAND_NUMBER::test();
-  string path = "../linux/objcopy/xavier/bin";
-  FOLDER::test(path);
+  // string path = "../linux/objcopy/xavier/bin";
+  // FOLDER::test(path);
+  string name(argv[1]);
+  FILE_STRING::test(name);
+  FILE_STRING::test2(name);
   return 0;
 }
