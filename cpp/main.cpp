@@ -418,11 +418,10 @@ int test(string &path) {
 namespace FILE_STRING {
 int test(string &name) {
   ifstream ifile(name);
-  //将文件读入到ostringstream对象buf中
+  // 将文件读入到ostringstream对象buf中
   ostringstream buf;
   char ch;
-  while(buf&&ifile.get(ch))
-  buf.put(ch);
+  while (buf && ifile.get(ch)) buf.put(ch);
   string ret = buf.str();
   cout << "读取de字符串为:" << ret << ",长度为:" << ret.size() << endl;
   return 0;
@@ -437,6 +436,35 @@ int test2(string &name) {
   return 0;
 }
 }  // namespace FILE_STRING
+
+#include <iostream>
+
+namespace STATIC_VAR_DESTRUCTION_ORDER {
+class A {
+ public:
+  A() { std::cout << "Class A Constructor" << std::endl; }
+
+  ~A() { std::cout << "Class A Destructor" << std::endl; }
+};
+
+class B {
+ public:
+  B() { std::cout << "Class B Constructor" << std::endl; }
+
+  ~B() { std::cout << "Class B Destructor" << std::endl; }
+};
+
+void foo() {
+  {
+  static A aPtr;
+
+  static B bObj;
+  }
+
+}
+}  // namespace STATIC_VAR_DESTRUCTION_ORDER
+
+
 
 int main(int argc, char *argv[]) {
   // test_VA_ARGS();
@@ -454,8 +482,10 @@ int main(int argc, char *argv[]) {
   // RAND_NUMBER::test();
   // string path = "../linux/objcopy/xavier/bin";
   // FOLDER::test(path);
-  string name(argv[1]);
-  FILE_STRING::test(name);
-  FILE_STRING::test2(name);
+  // string name(argv[1]);
+  // FILE_STRING::test(name);
+  // FILE_STRING::test2(name);
+
+  STATIC_VAR_DESTRUCTION_ORDER::foo();
   return 0;
 }
