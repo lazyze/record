@@ -454,17 +454,14 @@ class B {
   ~B() { std::cout << "Class B Destructor" << std::endl; }
 };
 
+void foo1() { static A aPtr; }
+
+void foo2() { static B bObj; }
 void foo() {
-  {
-  static A aPtr;
-
-  static B bObj;
-  }
-
+  foo1();
+  foo2();
 }
 }  // namespace STATIC_VAR_DESTRUCTION_ORDER
-
-
 
 int main(int argc, char *argv[]) {
   // test_VA_ARGS();
