@@ -1,3 +1,7 @@
+/*
+ * 进程相关的函数调用使用示例
+ */
+
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
